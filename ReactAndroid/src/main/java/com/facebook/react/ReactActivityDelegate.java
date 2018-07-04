@@ -87,10 +87,14 @@ public class ReactActivityDelegate {
       throw new IllegalStateException("Cannot loadApp while app is already running.");
     }
     mReactRootView = createRootView();
+
+    // rn 流初始入口处
     mReactRootView.startReactApplication(
       getReactNativeHost().getReactInstanceManager(),
       appKey,
       getLaunchOptions());
+
+    // ReactRootView 作为 ReactActivity 的根 Root View
     getPlainActivity().setContentView(mReactRootView);
   }
 

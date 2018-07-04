@@ -5,12 +5,16 @@
 
 package com.facebook.react.modules.systeminfo;
 
-import java.util.Locale;
-
 import android.os.Build;
+import android.util.Log;
+
+import com.facebook.common.logging.FLog;
+
+import java.util.Locale;
 
 public class AndroidInfoHelpers {
 
+  private static final String TAG = AndroidInfoHelpers.class.getSimpleName();
   public static final String EMULATOR_LOCALHOST = "10.0.2.2";
   public static final String GENYMOTION_LOCALHOST = "10.0.3.2";
   public static final String DEVICE_LOCALHOST = "localhost";
@@ -48,6 +52,7 @@ public class AndroidInfoHelpers {
     // Since genymotion runs in vbox it use different hostname to refer to adb host.
     // We detect whether app runs on genymotion and replace js bundle server hostname accordingly
 
+    FLog.d(TAG, "Build.FINGERPRINT: " + Build.FINGERPRINT);
     String ipAddress;
     if (isRunningOnGenymotion()) {
       ipAddress = GENYMOTION_LOCALHOST;

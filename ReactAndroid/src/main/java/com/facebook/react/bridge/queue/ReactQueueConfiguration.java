@@ -17,6 +17,7 @@ package com.facebook.react.bridge.queue;
  * Native Modules Queue Thread: The thread and Looper that native modules are invoked on.
  * JS Queue Thread: The thread and Looper that JS is executed on.
  */
+// ReactQueueConfigurationSpec：用于配置消息线程，在rn中有三个消息线程：UI线程、JS线程、Native线程，其中native调用js的代码会JS线程运行，JS调用native的代码会在Native线程中执行
 public interface ReactQueueConfiguration {
   MessageQueueThread getUIQueueThread();
   MessageQueueThread getNativeModulesQueueThread();

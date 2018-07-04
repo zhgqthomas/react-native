@@ -7,6 +7,8 @@
 
 package com.facebook.react.bridge;
 
+import android.util.Log;
+
 import static com.facebook.infer.annotation.Assertions.assertNotNull;
 import static com.facebook.systrace.Systrace.TRACE_TAG_REACT_JAVA_BRIDGE;
 
@@ -19,6 +21,8 @@ import java.lang.reflect.Method;
 import javax.annotation.Nullable;
 
 public class JavaMethodWrapper implements NativeModule.NativeMethod {
+
+  private static final String TAG = JavaMethodWrapper.class.getSimpleName();
 
   private static abstract class ArgumentExtractor<T> {
     public int getJSArgumentsNeeded() {
@@ -333,6 +337,7 @@ public class JavaMethodWrapper implements NativeModule.NativeMethod {
     SystraceMessage.beginSection(TRACE_TAG_REACT_JAVA_BRIDGE, "callJavaModuleMethod")
       .arg("method", traceName)
       .flush();
+    Log.d(TAG, "traceName: " + traceName);
     if (DEBUG) {
       PrinterHolder.getPrinter()
           .logMessage(

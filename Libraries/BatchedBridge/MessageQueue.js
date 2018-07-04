@@ -341,6 +341,14 @@ class MessageQueue {
       method,
       module,
     );
+
+    const params = {
+      module: module,
+      method: method,
+      args: args,
+    }
+
+    console.log('MessageQueue __callFunction: ', params);
     const result = moduleMethods[method].apply(moduleMethods, args);
     Systrace.endEvent();
     return result;

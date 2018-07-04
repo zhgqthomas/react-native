@@ -29,6 +29,7 @@ public abstract class JSBundleLoader {
     return new JSBundleLoader() {
       @Override
       public String loadScript(CatalystInstanceImpl instance) {
+        // for Dev assetUrl => asset://RNTesterApp.android.bundle
         instance.loadScriptFromAssets(context.getAssets(), assetUrl, loadSynchronously);
         return assetUrl;
       }

@@ -268,6 +268,7 @@ public class ReactInstanceManagerBuilder {
             ? new JSCJavaScriptExecutorFactory(appName, deviceName)
             : mJavaScriptExecutorFactory,
         (mJSBundleLoader == null && mJSBundleAssetUrl != null)
+          // JSBundleLoader 默认是从 asset 进行 bundle 的获取，可以在此进行自定义来应对不同的业务需求
             ? JSBundleLoader.createAssetLoader(
                 mApplication, mJSBundleAssetUrl, false /*Asynchronous*/)
             : mJSBundleLoader,

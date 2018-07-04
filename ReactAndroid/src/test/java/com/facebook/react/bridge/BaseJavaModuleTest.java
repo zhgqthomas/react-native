@@ -7,6 +7,8 @@
 
 package com.facebook.react.bridge;
 
+import android.util.Log;
+
 import javax.inject.Provider;
 import java.util.List;
 
@@ -31,6 +33,8 @@ import com.facebook.soloader.SoLoader;
 @RunWith(RobolectricTestRunner.class)
 public class BaseJavaModuleTest {
 
+  private static final String TAG = BaseJavaModuleTest.class.getSimpleName();
+
   @Rule
   public PowerMockRule rule = new PowerMockRule();
 
@@ -40,6 +44,7 @@ public class BaseJavaModuleTest {
 
   @Before
   public void setup() {
+    Log.d(TAG, "setup called");
     ModuleHolder moduleHolder = new ModuleHolder(new MethodsModule());
     mWrapper = new JavaModuleWrapper(null, MethodsModule.class, moduleHolder);
     mMethods = mWrapper.getMethodDescriptors();

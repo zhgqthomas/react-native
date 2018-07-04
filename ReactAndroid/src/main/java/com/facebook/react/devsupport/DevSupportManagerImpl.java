@@ -940,6 +940,7 @@ public class DevSupportManagerImpl implements
     };
   }
 
+  // Dev bundleURL => http://10.0.3.2:8081/RNTester/js/RNTesterApp.android.delta?platform=android&dev=true&minify=false
   public void reloadJSFromServer(final String bundleURL) {
     ReactMarker.logMarker(ReactMarkerConstants.DOWNLOAD_START);
 

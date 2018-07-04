@@ -44,6 +44,7 @@ public class RNTesterActivity extends ReactActivity {
 
     @Override
     protected Bundle getLaunchOptions() {
+      // => AppProperties
       return mInitialProps;
     }
   }

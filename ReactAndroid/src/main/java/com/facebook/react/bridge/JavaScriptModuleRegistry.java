@@ -38,6 +38,7 @@ public final class JavaScriptModuleRegistry {
       return (T) module;
     }
 
+    // 动态代理模式
     JavaScriptModule interfaceProxy = (JavaScriptModule) Proxy.newProxyInstance(
         moduleInterface.getClassLoader(),
         new Class[]{moduleInterface},
@@ -91,6 +92,8 @@ public final class JavaScriptModuleRegistry {
       NativeArray jsArgs = args != null
         ? Arguments.fromJavaArgs(args)
         : new WritableNativeArray();
+
+      // 最终还是要交由 C++ 对应的 CatalystInstance callFunction 方法
       mCatalystInstance.callFunction(getJSModuleName(), method.getName(), jsArgs);
       return null;
     }

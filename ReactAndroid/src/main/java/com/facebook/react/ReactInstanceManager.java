@@ -356,6 +356,7 @@ public class ReactInstanceManager {
     if (mUseDeveloperSupport
         && mJSMainModulePath != null
         && !Systrace.isTracing(TRACE_TAG_REACT_APPS | TRACE_TAG_REACT_JS_VM_CALLS)) {
+      // 接口对应实例 DeveloperSettings => DevInternalSettings       DevSupportManager => DevSupportManagerImpl
       final DeveloperSettings devSettings = mDevSupportManager.getDevSettings();
 
       // If remote JS debugging is enabled, load from dev server.
@@ -912,6 +913,8 @@ public class ReactInstanceManager {
 
                 try {
                   Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
+
+                  // 核心部分，创建 ReactContext
                   final ReactApplicationContext reactApplicationContext =
                       createReactContext(
                           initParams.getJsExecutorFactory().create(),
@@ -1016,6 +1019,8 @@ public class ReactInstanceManager {
     UIManager uiManagerModule = UIManagerHelper.getUIManager(mCurrentReactContext, rootView.getUIManagerType());
     final int rootTag = uiManagerModule.addRootView(rootView);
     rootView.setRootViewTag(rootTag);
+
+    // 最终调用 AppRegistry.js 的 runApplication 方法
     rootView.invokeJSEntryPoint();
     Systrace.beginAsyncSection(
       TRACE_TAG_REACT_JAVA_BRIDGE,
@@ -1083,6 +1088,7 @@ public class ReactInstanceManager {
         : mDevSupportManager;
     reactContext.setNativeModuleCallExceptionHandler(exceptionHandler);
 
+    // NativeModule 注册表
     NativeModuleRegistry nativeModuleRegistry = processPackages(reactContext, mPackages, false);
 
     CatalystInstanceImpl.Builder catalystInstanceBuilder = new CatalystInstanceImpl.Builder()

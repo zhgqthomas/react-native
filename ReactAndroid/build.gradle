@@ -247,7 +247,6 @@ task packageReactNdkLibsForBuck(dependsOn: packageReactNdkLibs, type: Copy) {
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.3"
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
@@ -265,7 +264,6 @@ android {
         testApplicationId "com.facebook.react.tests.gradle"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
     sourceSets.main {
         jni.srcDirs = []
         jniLibs.srcDir "$buildDir/react-ndk/exported"
@@ -276,13 +274,10 @@ android {
             exclude 'com/facebook/react/module/processing'
         }
     }
-
     tasks.withType(JavaCompile) {
         compileTask -> compileTask.dependsOn packageReactNdkLibs
     }
-
     clean.dependsOn cleanReactNdkLib
-
     lintOptions {
         abortOnError false
     }
@@ -290,10 +285,15 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
     }
+    buildTypes {
+        debug {
+            jniDebuggable true
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'src/main/third-party/java/infer-annotations/', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'src/main/third-party/java/infer-annotations/')
     compile 'javax.inject:javax.inject:1'
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.facebook.fbui.textlayoutbuilder:textlayoutbuilder:1.0.0'
@@ -305,7 +305,6 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp-urlconnection:3.10.0'
     compile 'com.squareup.okio:okio:1.14.0'
     compile 'org.webkit:android-jsc:r174650'
-
     testCompile "junit:junit:${JUNIT_VERSION}"
     testCompile "org.powermock:powermock-api-mockito:${POWERMOCK_VERSION}"
     testCompile "org.powermock:powermock-module-junit4-rule:${POWERMOCK_VERSION}"
@@ -313,8 +312,7 @@ dependencies {
     testCompile "org.mockito:mockito-core:${MOCKITO_CORE_VERSION}"
     testCompile "org.easytesting:fest-assert-core:${FEST_ASSERT_CORE_VERSION}"
     testCompile "org.robolectric:robolectric:${ROBOLECTRIC_VERSION}"
-
-    androidTestCompile fileTree(dir: 'src/main/third-party/java/buck-android-support/', include: ['*.jar'])
+    androidTestCompile fileTree(include: ['*.jar'], dir: 'src/main/third-party/java/buck-android-support/')
     androidTestCompile 'com.android.support.test:runner:0.3'
     androidTestCompile "org.mockito:mockito-core:${MOCKITO_CORE_VERSION}"
 }

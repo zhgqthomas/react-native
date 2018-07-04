@@ -4,6 +4,7 @@
 // LICENSE file in the root directory of this source tree.
 
 #include "JSCExecutor.h"
+#include "syslog.h"
 
 #include <fcntl.h>
 #include <sys/socket.h>
@@ -418,7 +419,7 @@ void JSCExecutor::loadApplicationScript(
     std::string sourceURL) {
   SystraceSection s(
       "JSCExecutor::loadApplicationScript", "sourceURL", sourceURL);
-
+  syslog(LOG_CRIT, "JSCExecutor::loadApplicationScript called");
   std::string scriptName = simpleBasename(sourceURL);
   ReactMarker::logTaggedMarker(
       ReactMarker::RUN_JS_BUNDLE_START, scriptName.c_str());
@@ -426,6 +427,7 @@ void JSCExecutor::loadApplicationScript(
 
 // TODO t15069155: reduce the number of overrides here
 #ifdef WITH_FBJSCEXTENSIONS
+  syslog(LOG_CRIT, "JSCExecutor::loadApplicationScript WITH_FBJSCEXTENSIONS");
   if (auto fileStr = dynamic_cast<const JSBigFileString*>(script.get())) {
     JSContextLock lock(m_context);
     JSLoadSourceStatus jsStatus;
@@ -456,6 +458,7 @@ void JSCExecutor::loadApplicationScript(
     }
   }
 #elif defined(__APPLE__)
+  syslog(LOG_CRIT, "JSCExecutor::loadApplicationScript __APPLE__");
   BundleHeader header;
   memcpy(
       &header, script->c_str(), std::min(script->size(), sizeof(BundleHeader)));
@@ -475,6 +478,7 @@ void JSCExecutor::loadApplicationScript(
   } else
 #endif
   {
+    syslog(LOG_CRIT, "JSCExecutor::loadApplicationScript endif");
     String jsScript;
     JSContextLock lock(m_context);
     {
@@ -520,7 +524,10 @@ void JSCExecutor::registerBundle(
 void JSCExecutor::bindBridge() throw(JSException) {
   SystraceSection s("JSCExecutor::bindBridge");
   std::call_once(m_bindFlag, [this] {
+      // 获取 js 中的 global 对象
     auto global = Object::getGlobalObject(m_context);
+
+      // 获取存储在 global 中的 MessageQueue 对象
     auto batchedBridgeValue = global.getProperty("__fbBatchedBridge");
     if (batchedBridgeValue.isUndefined()) {
       auto requireBatchedBridge =
@@ -534,6 +541,7 @@ void JSCExecutor::bindBridge() throw(JSException) {
       }
     }
 
+      // 在 native 中保存 MessageQueue 关键的函数对象
     auto batchedBridge = batchedBridgeValue.asObject();
     m_callFunctionReturnFlushedQueueJS =
         batchedBridge.getProperty("callFunctionReturnFlushedQueue").asObject();
@@ -548,12 +556,14 @@ void JSCExecutor::bindBridge() throw(JSException) {
 }
 
 void JSCExecutor::callNativeModules(Value&& value) {
+//  syslog(LOG_CRIT, "JSCExecutor::callNativeModules");
   SystraceSection s("JSCExecutor::callNativeModules");
   // If this fails, you need to pass a fully functional delegate with a
   // module registry to the factory/ctor.
   CHECK(m_delegate) << "Attempting to use native modules without a delegate";
   try {
     auto calls = value.toJSONString();
+//    syslog(LOG_CRIT, ("callNativeModules value:" + value.toString().str()).c_str());
     m_delegate->callNativeModules(*this, folly::parseJson(calls), true);
   } catch (...) {
     std::string message = "Error in callNativeModules()";
@@ -601,23 +611,31 @@ void JSCExecutor::callFunction(
     const std::string& methodId,
     const folly::dynamic& arguments) {
   SystraceSection s("JSCExecutor::callFunction");
+  syslog(LOG_CRIT, ("JSCExecutor::callFunction moduleId: " + moduleId + " methodId: " + methodId).c_str());
   // This weird pattern is because Value is not default constructible.
   // The lambda is inlined, so there's no overhead.
   auto result = [&] {
     JSContextLock lock(m_context);
     try {
       if (!m_callFunctionReturnResultAndFlushedQueueJS) {
+        // 如果没有 MessageQueue.js 中 callFunction 的对象实例，重新绑定 bridge
+        syslog(LOG_CRIT, "JSCExecutor::callFunction bindBridge");
         bindBridge();
       }
+
       return m_callFunctionReturnFlushedQueueJS->callAsFunction(
           {Value(m_context, String::createExpectingAscii(m_context, moduleId)),
            Value(m_context, String::createExpectingAscii(m_context, methodId)),
            Value::fromDynamic(m_context, std::move(arguments))});
     } catch (...) {
+      syslog(LOG_CRIT, "JSCExecutor::callFunction error calling");
       std::throw_with_nested(
           std::runtime_error("Error calling " + moduleId + "." + methodId));
     }
   }();
+
+  Value &&value = std::move(result);
+  syslog(LOG_CRIT, ("callFunctionReturnResult value:" + value.toString().str()).c_str());
   callNativeModules(std::move(result));
 }
 

@@ -121,6 +121,8 @@ NewJavaNativeModule::NewJavaNativeModule(
 , wrapper_(make_global(wrapper))
 , module_(make_global(wrapper->getModule()))
 , messageQueueThread_(std::move(messageQueueThread)) {
+
+  // 调用 Java 层 JavaModuleWrapper.java 的 getMethodDescriptors
   auto descs = wrapper_->getMethodDescriptors();
   std::string moduleName = getName();
   methods_.reserve(descs->size());

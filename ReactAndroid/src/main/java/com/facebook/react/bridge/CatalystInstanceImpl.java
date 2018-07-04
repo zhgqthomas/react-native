@@ -125,6 +125,7 @@ public class CatalystInstanceImpl implements CatalystInstance {
       mNativeModuleRegistry.getCxxModules());
     Log.d(ReactConstants.TAG, "Initializing React Xplat Bridge after initializeBridge");
 
+    // JSGlobalContextRef 的内存地址
     mJavaScriptContextHolder = new JavaScriptContextHolder(getJavaScriptContext());
   }
 

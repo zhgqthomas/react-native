@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
@@ -24,10 +25,12 @@ public class PackagerConnectionSettings {
 
   private final SharedPreferences mPreferences;
   private final String mPackageName;
+  private final Context mApplicatonContext;
 
   public PackagerConnectionSettings(Context applicationContext) {
     mPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext);
     mPackageName = applicationContext.getPackageName();
+    mApplicatonContext = applicationContext;
   }
 
   public String getDebugServerHost() {
@@ -42,6 +45,8 @@ public class PackagerConnectionSettings {
     String host = AndroidInfoHelpers.getServerHost();
 
     if (host.equals(AndroidInfoHelpers.DEVICE_LOCALHOST)) {
+      Toast.makeText(mApplicatonContext, "You seem to be running on device. Run 'adb reverse tcp:8081 tcp:8081' " +
+        "to forward the debug server's port to the device.", Toast.LENGTH_LONG);
       FLog.w(
         TAG,
         "You seem to be running on device. Run 'adb reverse tcp:8081 tcp:8081' " +

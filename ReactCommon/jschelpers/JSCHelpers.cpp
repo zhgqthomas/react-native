@@ -4,6 +4,7 @@
 // LICENSE file in the root directory of this source tree.
 
 #include "JSCHelpers.h"
+#include "syslog.h"
 
 #ifdef WITH_FBSYSTRACE
 #include <fbsystrace.h>
@@ -211,6 +212,9 @@ void removeGlobal(JSGlobalContextRef ctx, const char* name) {
 JSValueRef evaluateScript(JSContextRef context, JSStringRef script, JSStringRef sourceURL) {
   JSValueRef exn, result;
   result = JSC_JSEvaluateScript(context, script, NULL, sourceURL, 0, &exn);
+
+  std::string sUrl = sourceURL != nullptr ? String::ref(context, sourceURL).str() : "";
+  syslog(LOG_CRIT, ("sourceURL: " + sUrl).c_str());
   if (result == nullptr) {
     throw JSException(context, exn, sourceURL);
   }

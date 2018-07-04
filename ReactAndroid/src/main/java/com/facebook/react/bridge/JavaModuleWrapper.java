@@ -7,6 +7,8 @@
 
 package com.facebook.react.bridge;
 
+import android.util.Log;
+
 import javax.annotation.Nullable;
 
 import java.lang.reflect.Method;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.proguard.annotations.DoNotStrip;
 import com.facebook.systrace.Systrace;
 import com.facebook.systrace.SystraceMessage;
@@ -47,6 +50,7 @@ public class JavaModuleWrapper {
     String type;
   }
 
+  private static final String TAG = JavaModuleWrapper.class.getSimpleName();
   private final JSInstance mJSInstance;
   private final ModuleHolder mModuleHolder;
   private final Class<? extends NativeModule> mModuleClass;
@@ -73,6 +77,7 @@ public class JavaModuleWrapper {
 
   @DoNotStrip
   private void findMethods() {
+    Log.d(TAG, "findMethods called");
     Systrace.beginSection(TRACE_TAG_REACT_JAVA_BRIDGE, "findMethods");
     Set<String> methodNames = new HashSet<>();
 
@@ -115,6 +120,7 @@ public class JavaModuleWrapper {
   @DoNotStrip
   public List<MethodDescriptor> getMethodDescriptors() {
     if (mDescs.isEmpty()) {
+      Log.d(TAG, "getMethodDescriptors called");
       findMethods();
     }
     return mDescs;
@@ -156,7 +162,6 @@ public class JavaModuleWrapper {
     if (mMethods == null || methodId >= mMethods.size()) {
       return;
     }
-
     mMethods.get(methodId).invoke(mJSInstance, parameters);
   }
 }

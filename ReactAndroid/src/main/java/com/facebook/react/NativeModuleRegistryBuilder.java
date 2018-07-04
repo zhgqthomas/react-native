@@ -44,6 +44,7 @@ public class NativeModuleRegistryBuilder {
     mLazyNativeModulesEnabled = lazyNativeModulesEnabled;
   }
 
+  // Native Module 会根据 Lazy 状态来相应的进行懒加载 再转化成 ModuleHolder
   public void processPackage(ReactPackage reactPackage) {
     if (mLazyNativeModulesEnabled) {
       if (!(reactPackage instanceof LazyReactPackage)) {
