@@ -121,8 +121,8 @@ static JSValueRef nativeInjectHMRUpdate(
 #endif
 
 std::unique_ptr<JSExecutor> JSCExecutorFactory::createJSExecutor(
-    std::shared_ptr<ExecutorDelegate> delegate,
-    std::shared_ptr<MessageQueueThread> jsQueue) {
+    std::shared_ptr<ExecutorDelegate> delegate, // 即 JsToNativeBridge
+    std::shared_ptr<MessageQueueThread> jsQueue) { // js 线程队列
   return folly::make_unique<JSCExecutor>(
       delegate, jsQueue, m_jscConfig);
 }

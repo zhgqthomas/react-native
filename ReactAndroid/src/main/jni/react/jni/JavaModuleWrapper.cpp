@@ -87,7 +87,9 @@ folly::dynamic JavaNativeModule::getConstants() {
 }
 
 void JavaNativeModule::invoke(unsigned int reactMethodId, folly::dynamic&& params, int callId) {
+  // 在 native 线程队列中进行方法的调用
   messageQueueThread_->runOnQueue([this, reactMethodId, params=std::move(params), callId] {
+      // 调用 java 层 JavaModuleWrapper.java 中的 invoke 函数
     static auto invokeMethod = wrapper_->getClass()->getMethod<void(jint, ReadableNativeArray::javaobject)>("invoke");
     #ifdef WITH_FBSYSTRACE
     if (callId != -1) {

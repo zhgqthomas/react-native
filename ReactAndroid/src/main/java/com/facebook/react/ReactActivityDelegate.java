@@ -88,13 +88,13 @@ public class ReactActivityDelegate {
     }
     mReactRootView = createRootView();
 
-    // rn 流初始入口处
+    // rn 启动入口
     mReactRootView.startReactApplication(
       getReactNativeHost().getReactInstanceManager(),
       appKey,
       getLaunchOptions());
 
-    // ReactRootView 作为 ReactActivity 的根 Root View
+    // ReactRootView 作为 ReactActivity 的根 View
     getPlainActivity().setContentView(mReactRootView);
   }
 

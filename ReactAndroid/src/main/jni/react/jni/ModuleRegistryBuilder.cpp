@@ -39,9 +39,9 @@ std::vector<std::unique_ptr<NativeModule>> buildNativeModuleList(
     std::shared_ptr<MessageQueueThread> moduleMessageQueue) {
   std::vector<std::unique_ptr<NativeModule>> modules;
   if (javaModules) {
-    for (const auto& jm : *javaModules) {
+    for (const auto& jm : *javaModules) { // jm 对应 Java 里 JavaModuleWrapper 的对象
       modules.emplace_back(folly::make_unique<JavaNativeModule>(
-                     winstance, jm, moduleMessageQueue));
+                     winstance, jm, moduleMessageQueue)); // 传入 native 线程队列以便调用
     }
   }
   if (cxxModules) {

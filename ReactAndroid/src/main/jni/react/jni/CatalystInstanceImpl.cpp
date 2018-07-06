@@ -45,6 +45,7 @@ class Exception : public jni::JavaClass<Exception> {
   static auto constexpr kJavaDescriptor = "Ljava/lang/Exception;";
 };
 
+    // native 调用 java 的回调
 class JInstanceCallback : public InstanceCallback {
  public:
   explicit JInstanceCallback(
@@ -53,6 +54,7 @@ class JInstanceCallback : public InstanceCallback {
   : jobj_(make_global(jobj)), messageQueueThread_(std::move(messageQueueThread)) {}
 
   void onBatchComplete() override {
+    // native 详细队列
     messageQueueThread_->runOnQueue([this] {
       static auto method =
         ReactCallback::javaClassStatic()->getMethod<void()>("onBatchComplete");

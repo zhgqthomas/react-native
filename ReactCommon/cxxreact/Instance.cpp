@@ -45,6 +45,7 @@ void Instance::initializeBridge(
   moduleRegistry_ = std::move(moduleRegistry);
 
   jsQueue->runOnQueueSync([this, &jsef, jsQueue]() mutable {
+      // 初始化 NativeToJsBridge
     nativeToJsBridge_ = folly::make_unique<NativeToJsBridge>(
         jsef.get(), moduleRegistry_, jsQueue, callback_);
 

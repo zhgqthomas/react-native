@@ -46,6 +46,7 @@ public class ReactQueueConfigurationSpec {
   }
 
   public static ReactQueueConfigurationSpec createDefault() {
+    // 初始化 native 线程队列 和 js 线程队列
     MessageQueueThreadSpec spec = Build.VERSION.SDK_INT < 21 ?
         MessageQueueThreadSpec.newBackgroundThreadSpec("native_modules", LEGACY_STACK_SIZE_BYTES) :
         MessageQueueThreadSpec.newBackgroundThreadSpec("native_modules");
