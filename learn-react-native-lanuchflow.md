@@ -559,4 +559,5 @@ module.exports = BatchedBridge;
 ### 总结
 对上面的源码流程做了个核心方法的调用流程图
 
-![](https://upload-images.jianshu.io/upload_images/854027-f61838b815e8e341.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](https://user-gold-cdn.xitu.io/2018/7/9/1647e3812eeeb897?w=1071&h=1387&f=png&s=41731)
+
