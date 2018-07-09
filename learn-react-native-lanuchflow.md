@@ -190,7 +190,7 @@ AppRegistry.registerComponent('RNTesterApp', () => RNTesterApp);
 沿着 `createReactContextInBackground` 的函数流，会发现最终不管是采用加载网络还是本地的 bundle 文件最终都是会到达 `runCreateReactContextOnNewThread` 方法中
 
 ```Java
-// runCreateReactContextOnNewThread.java
+// ReactInstanceManager.java
   private void runCreateReactContextOnNewThread(final ReactContextInitParams initParams) {
     ...
     mCreateReactContextThread =
@@ -555,3 +555,8 @@ module.exports = BatchedBridge;
 ```
 
 可以看出 `__fbBatchedBridge` 指的就是 JS 中的 MessageQueue 对象，这样就实现了 Android 端的消息队列和 JS 端消息队列的连通。
+
+### 总结
+对上面的源码流程做了个核心方法的调用流程图
+
+![](https://upload-images.jianshu.io/upload_images/854027-f61838b815e8e341.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
